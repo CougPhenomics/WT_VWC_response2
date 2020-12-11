@@ -113,10 +113,10 @@ def main():
         # imgt_h = pcv.rgb2gray_hsv(img,'h')
         mask1, img1 = pcv.threshold.custom_range(img, [15, 0, 0],
                                                  [60, 255, 255], 'hsv')
-        mask1 = pcv.fill(mask1, 200)
-        mask1 = pcv.closing(mask1, pcv.get_kernel((5, 5), 'rectangle'))
-
-        mask = mask1
+        l_img1 = pcv.rgb2gray_lab(img1, 'l')
+        lm1 = pcv.threshold.otsu(l_img1, 255, 'light')
+        lm1fill = pcv.fill(lm1, 500)
+        mask = lm1fill
         # img1 = pcv.apply_mask(img, mask1, 'black')
 
         # # remove faint algae
@@ -134,7 +134,7 @@ def main():
     # find objects based on threshold mask
     c, h = pcv.find_objects(img, mask)
     # setup roi based on pot locations
-    rc, rh = pcv.roi.multi(img, coord=[(1250, 1000), (1250, 2300)], radius=300)
+    rc, rh = pcv.roi.multi(img, coord=[(1300,1700)], radius=300)
     # Turn off debug temporarily if activated, otherwise there will be a lot of plots
     pcv.params.debug = None
     # Loop over each region of interest
@@ -148,10 +148,10 @@ def main():
                                        rh,
                                        args=args,
                                        masked=True,
-                                       gi=True,
-                                       shape=True,
-                                       hist=True,
-                                       hue=True)
+                                       gi=False,
+                                       shape=False,
+                                       hist=False,
+                                       hue=False)
     # pcv.plot_image(final_mask)
 
 
